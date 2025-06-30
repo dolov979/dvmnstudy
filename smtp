@@ -1,0 +1,60 @@
+import smtplib
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+from_email = os.environ.get("FROM_EMAIL", "")
+password = os.environ.get("PASSWORD", "")
+to_email = os.environ.get("TO_EMAIL", "")
+subject = "Приглашение!"
+friend_name = "Алина"
+my_name = "Аскер"
+website = "https://dvmn.org/profession-ref-program/dolov979/V5CTD/"
+main_website = "https://dvmn.org/"
+
+invite_text = f'''From: {from_email}
+To: {to_email}
+Subject: {subject}
+Content-Type: text/plain; charset=UTF-8
+
+Привет, {friend_name}! {my_name} приглашает тебя на сайт {main_website}
+
+{main_website} — это новая версия онлайн-курса по программированию. 
+Изучаем Python и не только. Решаем задачи. Получаем ревью от преподавателя. 
+
+Как будет проходить ваше обучение на {website}? 
+
+→ Попрактикуешься на реальных кейсах. 
+Задачи от тимлидов со стажем от 10 лет в программировании.
+→ Будешь учиться без стресса и бессонных ночей. 
+Задачи не «сгорят» и не уйдут к другому. Занимайся в удобное время и ровно столько, сколько можешь.
+→ Подготовишь крепкое резюме.
+Все проекты — они же решение наших задачек — можно разместить на твоём GitHub. Работодатели такое оценят. 
+
+Регистрируйся → {website}  
+На курсы, которые еще не вышли, можно подписаться и получить уведомление о релизе сразу на имейл.
+
+С уважением,
+{my_name}'''
+
+print(invite_text)
+
+try:
+    server = smtplib.SMTP('smtp.yandex.ru', 587)
+    server.starttls()
+    server.login(from_email, password)
+    server.sendmail(from_email, to_email, invite_text.encode('utf-8'))
+    print("Email отправлен успешно!")
+except Exception as e:
+    print(f"Ошибка через порт 587: {e}")
+    try:
+        server = smtplib.SMTP_SSL('smtp.yandex.ru', 465)
+        server.login(from_email, password)
+        server.sendmail(from_email, to_email, invite_text.encode('utf-8'))
+        print("Email отправлен успешно через порт 465!")
+    except Exception as e2:
+        print(f"Ошибка через порт 465: {e2}")
+finally:
+    if 'server' in locals():
+        server.quit()
