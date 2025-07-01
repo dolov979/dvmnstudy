@@ -38,23 +38,18 @@ Content-Type: text/plain; charset=UTF-8
 С уважением,
 {my_name}'''
 
-print(invite_text)
-
 try:
     server = smtplib.SMTP('smtp.yandex.ru', 587)
     server.starttls()
     server.login(from_email, password)
     server.sendmail(from_email, to_email, invite_text.encode('utf-8'))
-    print("Email отправлен успешно!")
 except Exception as e:
-    print(f"Ошибка через порт 587: {e}")
     try:
         server = smtplib.SMTP_SSL('smtp.yandex.ru', 465)
         server.login(from_email, password)
         server.sendmail(from_email, to_email, invite_text.encode('utf-8'))
-        print("Email отправлен успешно через порт 465!")
     except Exception as e2:
-        print(f"Ошибка через порт 465: {e2}")
+        pass
 finally:
     if 'server' in locals():
         server.quit()
